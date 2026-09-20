@@ -47,6 +47,23 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
+> **Note:** this project loads configuration from a `.env` file via `python-dotenv`
+> (`load_dotenv()` is called in `rag_chain.py`/`app.py`). Make sure `python-dotenv` is listed
+> in `requirements.txt` — if you added `.env` support recently, confirm the package is present
+> there (`pip install python-dotenv` if not) so a fresh clone doesn't fail on import.
+
+### Configuring API keys / provider settings
+Copy `.env.example` to `.env` and fill in your values — this file is `.gitignore`d and is the
+recommended way to configure the project, since it's loaded automatically:
+```bash
+cp .env.example .env
+# then edit .env with your editor of choice
+```
+
+If you'd rather not use `.env`, you can set the same variables directly in your shell instead
+(see [Choosing an LLM backend](#choosing-an-llm-backend) below for both Bash and PowerShell
+syntax) — variables set this way take precedence over `.env`.
+
 ### Running the pipeline (in order)
 ```bash
 # Phase 1–2: (already done) scraped_book.json exists, and vector DB benchmark was run
@@ -64,20 +81,43 @@ python app.py
 ```
 
 ### Choosing an LLM backend
-Set before running `rag_chain.py` / `app.py` (see comments in `rag_chain.py` for full details):
-```bash
+Set these **either** in your `.env` file (recommended — loaded automatically, see above) **or**
+directly in your shell before running `rag_chain.py` / `app.py` (see comments in `rag_chain.py`
+for full details):
+
+**`.env` file:**
+```env
 # Local (default, free, private)
-export LLM_PROVIDER=ollama
-export OLLAMA_MODEL=gemma2:2b
+LLM_PROVIDER=ollama
+OLLAMA_MODEL=gemma2:2b
 
 # or Groq (fast hosted API)
-export LLM_PROVIDER=groq
-export GROQ_API_KEY=your_key
+LLM_PROVIDER=groq
+GROQ_API_KEY=your_key
+GROQ_MODEL=openai/gpt-oss-20b
 
 # or OpenAI
-export LLM_PROVIDER=openai
-export OPENAI_API_KEY=your_key
+LLM_PROVIDER=openai
+OPENAI_API_KEY=your_key
 ```
+
+**Bash (macOS/Linux):**
+```bash
+export LLM_PROVIDER=groq
+export GROQ_API_KEY=your_key
+export GROQ_MODEL=openai/gpt-oss-20b
+```
+
+**PowerShell (Windows):**
+```powershell
+$env:LLM_PROVIDER="groq"
+$env:GROQ_API_KEY="your_key"
+$env:GROQ_MODEL="openai/gpt-oss-20b"
+```
+
+> ⚠️ Never commit a real API key to `README.md`, `.env`, or any tracked file — keep `.env` in
+> `.gitignore`, and if a key is ever pasted somewhere public (a chat, a commit, an issue),
+> revoke/regenerate it immediately from the provider's dashboard.
 
 ---
 
@@ -206,6 +246,8 @@ Final answer (Bengali) + chapter citation(s), shown in the Gradio UI
 ├── app.py                    # Phase 4: Gradio web UI
 ├── test_questions.md         # 10 test questions with expected answers + chapter
 ├── requirements.txt
+├── .env.example               # Template for LLM_PROVIDER / API keys — copy to .env and fill in
+├── .env                       # Your local config (gitignored, not committed)
 └── README.md
 ```
 

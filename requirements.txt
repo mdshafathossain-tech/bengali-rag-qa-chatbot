@@ -13,6 +13,11 @@ chromadb>=0.5.0
 rank-bm25>=0.2.2
 psutil>=5.9.0
 
+# --- Config loading ---
+# Loads LLM_PROVIDER / API keys / model names from a local .env file via
+# load_dotenv() in rag_chain.py / app.py. See .env.example for the expected keys.
+python-dotenv>=1.0.0
+
 # --- LLM providers (Phase 3) ---
 # All three pinned to the last release compatible with langchain-core<0.4.0.
 # DO NOT `pip install langchain-groq` / `langchain-ollama` / `langchain-openai`
