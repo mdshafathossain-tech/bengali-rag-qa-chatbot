@@ -79,6 +79,15 @@ import traceback
 
 import gradio as gr
 
+from dotenv import load_dotenv
+
+# Load all variables from .env automatically
+load_dotenv()
+
+# Apply proxy settings in runtime if needed
+os.environ["NO_PROXY"] = "127.0.0.1,localhost"
+os.environ["no_proxy"] = "127.0.0.1,localhost"
+
 # ---------------------------------------------------------------------------
 # Import the RAG building blocks from Phase 3 (rag_chain.py must be in the
 # same directory, or importable on PYTHONPATH).
